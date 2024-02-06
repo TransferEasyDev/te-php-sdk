@@ -45,6 +45,7 @@ class TE {
      */
     protected static function config(array $config = [])
     {
+        //检测config
          ParamCheck::check($config);
     }
 }
