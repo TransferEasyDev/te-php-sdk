@@ -1,13 +1,13 @@
 <?php
-declare(strict_types=1);
 
 namespace Transfereasy\Pay\Exception;
 use Throwable;
-class SignException extends Exception
+
+class ServerException extends Exception
 {
     public function __construct(
-        int $code = self::DECRYPT_ERROR,
-        string $message = 'sign error',
+        int $code = self::SERVER_ERROR,
+        string $message = 'decrypt error',
         mixed $extra = null,
         ?Throwable $previous = null
     ) {
