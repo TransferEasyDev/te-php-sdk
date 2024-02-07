@@ -27,11 +27,11 @@ class TE {
         if (isset($config['version'])) {
             $version = $config['version'];
         }
-        $config['domain'] = "https://test-newapi.transfereasy.com";
+        $config['domain'] = "https://api.transfereasy.com";
         if (isset($config["env"]) && $config['env'] != 'prod') {
-            $config['domain'] = "https://api.transfereasy.com";
+            $config['domain'] = "https://test-newapi.transfereasy.com";
         }
-
+        
         $className = '\Transferase\Pay\Service\Payment\V'.$version.'\\' . ucfirst($service) . 'Service';
         if (class_exists($className)) {
             $reflectionClass = new ReflectionClass($className);
