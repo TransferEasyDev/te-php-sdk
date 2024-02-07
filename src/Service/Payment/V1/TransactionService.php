@@ -27,11 +27,8 @@ class TransactionService extends BaseService
 
         $route = "/V1/transaction/closePayment";
 
-        return Request::post($this->domain.$route, ['outTradeNo' => $params], $this->request_header);
+        return Request::post($this->domain.$route, ['outTradeNo' => $params], $this->config);
     }
-
-
-
 }
 
 

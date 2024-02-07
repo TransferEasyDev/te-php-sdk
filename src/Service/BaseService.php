@@ -7,12 +7,13 @@ use Transfereasy\Pay\Exception\SignException;
 
 class BaseService
 {
-    protected $request_header;
+    protected $config;
     protected $domain;
+
     public function __construct(array $config = [])
     {
-        $domain = $config['domain'];
-        $request_header = Config::load($config);
+        $this->domain = $config['domain'];
+        $this->config = $config;
     }
 
 
@@ -32,16 +33,18 @@ class BaseService
 
     /**
      * 异步通知
-     * @param string $params 传入TE响应的body string信息即可
+     * @param string $params 传入TE响应的body
+     * @param string $signature 传入
      * @return void
      * @throws SignException
      */
-    public function notify(string $params):array
+    public function notify(string $params, string $signature, $timestamp):array
     {
         //验签
-        if (!Ticket::verify($params)) {
+        if (base64_decode($signature) != Ticket::getVerifyStr($params, $timestamp, $this->config['t_public_key_path'])) {
             throw new SignException();
         }
+
         return json_decode($params, true);
     }
 

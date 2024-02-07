@@ -8,13 +8,29 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Transfereasy\Pay\Exception\Exception;
 use Transfereasy\Pay\Exception\ServerException;
+use Transfereasy\Pay\Service\Ticket;
 
 class Request
 {
+
+    private static function createHeader(array $data, array $config):array
+    {
+        $time = time();
+        $header = [
+            'Content-Type' => 'application/json',
+            'Timestamp' => $time,
+            'MerchantNO' => $config['t_merchant_no'],
+            'ProductCode' => $config['t_product_code']
+        ];
+
+        $header['Signature'] = Ticket::generateSignature($data, $config['m_private_key_path'], $time);
+
+        return $header;
+    }
     /**
      * @throws ServerException
      */
-    public static function get(string $url, array $data, array $header = []): array
+    public static function get(string $url, array $data, array $config = []): array
     {
         $client = new Client();
         $ext = "?";
@@ -24,7 +40,7 @@ class Request
 
         try {
             $response = $client->request('GET', $url.$ext, [
-                'header' => $header
+                'header' => self::createHeader($data, $config)
             ]);
             $code = $response->getStatusCode();
             if ($code != 200) {
@@ -40,12 +56,12 @@ class Request
     /**
      * @throws ServerException
      */
-    public static function post(string $url, array $data, array $header = []): array
+    public static function post(string $url, array $data, array $config = []): array
     {
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
-                'header' => $header,
+                'header' => self::createHeader($data, $config),
                 'params' => $data
             ]);
             $code = $response->getStatusCode();

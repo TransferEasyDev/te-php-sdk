@@ -24,7 +24,7 @@ class ParamCheck
 
     private static function config($param)
     {
-        $base_data = ['', '', ''];
+        $base_data = ['m_private_key_path', 't_public_key_path', 't_merchant_no', 't_product_code'];
         $param_keys = array_keys($param);
         $result = array_diff($param_keys, $base_data);
         if (empty($result)) return true;
