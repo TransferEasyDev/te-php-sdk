@@ -9,9 +9,8 @@ class CustomerException extends Exception
     public function __construct(
         int $code = self::UNKNOWN_SERVICE,
         string $message = 'customer error',
-        mixed $extra = null,
         ?Throwable $previous = null
     ) {
-        parent::__construct($message, $code, $extra, $previous);
+        parent::__construct($message, $code, $previous);
     }
 }

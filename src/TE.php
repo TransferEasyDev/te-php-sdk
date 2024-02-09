@@ -21,21 +21,22 @@ class TE {
     public static function __callStatic(string $service, array $config = [])
     {
         if (!empty($config)) {
-            self::config($config);
+            $config = self::config(...$config);
         }
         $version = '1';
         if (isset($config['version'])) {
             $version = $config['version'];
         }
+
         $config['domain'] = "https://api.transfereasy.com";
         if (isset($config["env"]) && $config['env'] != 'prod') {
             $config['domain'] = "https://test-newapi.transfereasy.com";
         }
         
-        $className = '\Transferase\Pay\Service\Payment\V'.$version.'\\' . ucfirst($service) . 'Service';
+        $className = '\Transfereasy\Pay\Service\Payment\V'.$version.'\\' . ucfirst($service) . 'Service';
         if (class_exists($className)) {
             $reflectionClass = new ReflectionClass($className);
-            return $reflectionClass->newInstanceArgs($config);
+            return $reflectionClass->newInstanceArgs([$config]);
         }
         throw new CustomerException(Exception::SERVICE_IS_NOT_FOUND);
     }
@@ -43,9 +44,11 @@ class TE {
     /**
      * @throws CustomerException
      */
-    protected static function config(array $config = [])
+    public static function config(array $config = []):array
     {
         //检测config
-         ParamCheck::check($config);
+        ParamCheck::check($config);
+
+        return $config;
     }
 }

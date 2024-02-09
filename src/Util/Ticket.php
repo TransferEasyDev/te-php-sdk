@@ -1,6 +1,10 @@
 <?php
 
-namespace Transfereasy\Pay\Service;
+namespace Transfereasy\Pay\Util;
+
+use Transfereasy\Pay\Exception\CustomerException;
+use Transfereasy\Pay\Exception\Exception;
+use Transfereasy\Pay\Exception\SignException;
 
 class Ticket
 {
@@ -11,6 +15,8 @@ class Ticket
      * @param $private_key_path
      * @param $timestamp
      * @return string
+     * @throws CustomerException
+     * @throws SignException
      */
     public static function generateSignature($data, $private_key_path, $timestamp): string
     {
@@ -28,18 +34,27 @@ class Ticket
 
         // 在参数字符串后面拼接Timestamp
         $paramString .= ',' . $timestamp;
+        if (!file_exists($private_key_path)) {
+            throw new CustomerException(Exception::FILE_NOT_SUPPORTED);
+        }
 
         // 加载私钥
         $privateKey = openssl_pkey_get_private(file_get_contents($private_key_path));
 
-        // 使用SHA256进行哈希计算
-        $hash = hash('sha256', $paramString);
+        if (!$privateKey) {
+            throw new SignException(Exception::DECRYPT_ERROR, openssl_error_string());
+        }
 
-        // 使用RSA私钥进行加密
-        openssl_private_encrypt($hash, $encrypted, $privateKey);
+        $crypto = '';
+
+        foreach (str_split($paramString, 117) as $chunk) {
+            openssl_private_encrypt($chunk, $encrypted, $privateKey);
+            $crypto .= $encrypted;
+        }
+        $hash = hash('sha256', $crypto);
 
         // 将加密结果进行Base64编码
-        $signature = base64_encode($encrypted);
+        $signature = base64_encode($hash);
 
         // 释放私钥资源
         openssl_free_key($privateKey);
@@ -53,6 +68,7 @@ class Ticket
      * @param $timestamp
      * @param $public_key_path
      * @return string
+     * @throws CustomerException
      */
     private static function generateSignatureByPublic($data, $timestamp, $public_key_path):string
     {
@@ -70,7 +86,9 @@ class Ticket
 
         // 在参数字符串后面拼接Timestamp
         $paramString .= ',' . $timestamp;
-
+        if (!file_exists($public_key_path)) {
+            throw new CustomerException(Exception::FILE_NOT_SUPPORTED);
+        }
         // 加载公钥
         $publicKey = openssl_pkey_get_public(file_get_contents($public_key_path));
 
@@ -86,6 +104,9 @@ class Ticket
         return $hash;
     }
 
+    /**
+     * @throws CustomerException
+     */
     public static function getVerifyStr(string $params, $timestamp, $public_key_path):string
     {
         $get_data = json_decode($params, true);

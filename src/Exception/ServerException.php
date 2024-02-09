@@ -8,9 +8,8 @@ class ServerException extends Exception
     public function __construct(
         int $code = self::SERVER_ERROR,
         string $message = 'decrypt error',
-        mixed $extra = null,
         ?Throwable $previous = null
     ) {
-        parent::__construct($message, $code, $extra, $previous);
+        parent::__construct($message, $code, $previous);
     }
 }

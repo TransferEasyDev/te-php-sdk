@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Transfereasy\Pay\Exception\Exception;
 use Transfereasy\Pay\Exception\ServerException;
-use Transfereasy\Pay\Service\Ticket;
 
 class Request
 {

@@ -13,6 +13,8 @@ class Exception extends \Exception
 
     public const PARAMS_METHOD_NOT_SUPPORTED = 9401;
 
+    public const FILE_NOT_SUPPORTED = 9402;
+
     public const PARAMS_IS_NOT_ENOUGH = 9403;
 
     public const SERVICE_IS_NOT_FOUND = 9404;

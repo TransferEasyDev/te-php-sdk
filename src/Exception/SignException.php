@@ -8,9 +8,8 @@ class SignException extends Exception
     public function __construct(
         int $code = self::DECRYPT_ERROR,
         string $message = 'sign error',
-        mixed $extra = null,
         ?Throwable $previous = null
     ) {
-        parent::__construct($message, $code, $extra, $previous);
+        parent::__construct($message, $code, $previous);
     }
 }

@@ -12,12 +12,13 @@ class ParamCheck
     public static function check($params = [], $method="config")
     {
         $get_result = self::{$method}($params);
-        if (count($get_result) > 0) {
+        if (is_array($get_result) && count($get_result) > 0) {
             $str = '';
             foreach ($get_result as $params) {
                 $str .= $params . ',';
             }
             $str .= ' not enough';
+
             throw new CustomerException(Exception::PARAMS_IS_NOT_ENOUGH, $str);
         }
     }
@@ -26,10 +27,11 @@ class ParamCheck
     {
         $base_data = ['m_private_key_path', 't_public_key_path', 't_merchant_no', 't_product_code'];
         $param_keys = array_keys($param);
-        $result = array_diff($param_keys, $base_data);
-        if (empty($result)) return true;
+        $missing_keys = array_diff($base_data, $param_keys);
 
-        return $result;
+        if (empty($missing_keys)) return true;
+
+        return $missing_keys;
     }
 
 

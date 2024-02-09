@@ -3,7 +3,9 @@ declare(strict_types=1);
 namespace Transfereasy\Pay\Service;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Transfereasy\Pay\Exception\CustomerException;
 use Transfereasy\Pay\Exception\SignException;
+use Transfereasy\Pay\Util\Ticket;
 
 class BaseService
 {
@@ -14,8 +16,17 @@ class BaseService
     {
         $this->domain = $config['domain'];
         $this->config = $config;
+
     }
 
+
+    /**
+     * @throws CustomerException
+     */
+    public function getSign(array $data, $timestamp): string
+    {
+        return Ticket::generateSignature($data, $this->config['m_private_key_path'], $timestamp);
+    }
 
     public function success():ResponseInterface
     {
