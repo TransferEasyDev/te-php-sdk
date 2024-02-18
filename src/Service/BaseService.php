@@ -9,7 +9,7 @@ use Transfereasy\Pay\Util\Ticket;
 
 class BaseService
 {
-    protected $config;
+    protected array $config;
     protected $domain;
 
     public function __construct(array $config = [])
@@ -21,7 +21,7 @@ class BaseService
 
 
     /**
-     * @throws CustomerException
+     * @throws CustomerException|SignException
      */
     public function getSign(array $data, $timestamp): string
     {
@@ -47,7 +47,7 @@ class BaseService
      * @param string $params 传入TE响应的body
      * @param string $signature 传入
      * @return void
-     * @throws SignException
+     * @throws SignException|CustomerException
      */
     public function notify(string $params, string $signature, $timestamp):array
     {

@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 namespace Transfereasy\Pay;
 
@@ -9,10 +8,12 @@ use ReflectionException;
 use Transfereasy\Pay\Exception\CustomerException;
 use Transfereasy\Pay\Exception\Exception;
 use Transfereasy\Pay\Service\Payment\V1\TransactionService;
+use Transfereasy\Pay\Service\Payment\V2\TransactionService as transactionServiceV2;
 use Transfereasy\Pay\Util\ParamCheck;
 
 /**
  * @method static TransactionService transaction(array $config = [])
+ * @method static TransactionServiceV2 transactionV2(array $config = [])
  */
 class TE {
     /**
@@ -24,17 +25,21 @@ class TE {
         if (!empty($config)) {
             $config = self::config(...$config);
         }
+
+        $get_service = explode('V', $service);
+
         $version = '1';
-        if (isset($config['version'])) {
-            $version = $config['version'];
+        if (count($get_service) > 1 && $get_service[1] == '2') {
+            $version = $get_service[1];
         }
 
         $config['domain'] = "https://api.transfereasy.com";
         if (isset($config["env"]) && $config['env'] != 'prod') {
             $config['domain'] = "https://test-newapi.transfereasy.com";
         }
-        
-        $className = '\Transfereasy\Pay\Service\Payment\V'.$version.'\\' . ucfirst($service) . 'Service';
+
+        $className = '\Transfereasy\Pay\Service\Payment\V'.$version.'\\' . ucfirst($get_service[0]) . 'Service';
+
         if (class_exists($className)) {
             $reflectionClass = new ReflectionClass($className);
             return $reflectionClass->newInstanceArgs([$config]);

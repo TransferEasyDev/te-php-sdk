@@ -20,41 +20,35 @@ class Ticket
      */
     public static function generateSignature($data, $private_key_path, $timestamp): string
     {
-        // 将关联数组按ASCII码从小到大排序
-        ksort($data);
-
         // 构建URL键值对格式的参数字符串
-        $paramString = '';
         foreach ($data as $key => $value) {
             // 对键值进行URL编码
-            $encodedValue = urlencode($value);
-            $paramString .= $key . '=' . $encodedValue . '&';
+            if (is_array($value)) {
+                $value = array_map(function($v_data) {
+                    ksort($v_data, SORT_STRING);
+                    return $v_data;
+                }, $value);
+                $data[$key] = json_encode($value, JSON_UNESCAPED_UNICODE);
+            }
         }
-        $paramString = rtrim($paramString, '&');
-
+        ksort($data, SORT_STRING);
         // 在参数字符串后面拼接Timestamp
-        $paramString .= ',' . $timestamp;
+        $signData = http_build_query($data).','.$timestamp;
+
         if (!file_exists($private_key_path)) {
             throw new CustomerException(Exception::FILE_NOT_SUPPORTED);
         }
 
         // 加载私钥
         $privateKey = openssl_pkey_get_private(file_get_contents($private_key_path));
-
         if (!$privateKey) {
             throw new SignException(Exception::DECRYPT_ERROR, openssl_error_string());
         }
 
-        $crypto = '';
-
-        foreach (str_split($paramString, 117) as $chunk) {
-            openssl_private_encrypt($chunk, $encrypted, $privateKey);
-            $crypto .= $encrypted;
-        }
-        $hash = hash('sha256', $crypto);
+        openssl_sign($signData, $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
         // 将加密结果进行Base64编码
-        $signature = base64_encode($hash);
+        $signature = base64_encode($sign);
 
         // 释放私钥资源
         openssl_free_key($privateKey);
