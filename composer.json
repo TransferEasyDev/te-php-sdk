@@ -2,6 +2,7 @@
     "name": "transfereasy/pay",
     "description": "transfereasy 的PHP SDK",
     "license": "MIT",
+    "version": "0.1.0-dev",
     "require": {
         "php": ">=7.4",
         "guzzlehttp/psr7": "^2.6",
