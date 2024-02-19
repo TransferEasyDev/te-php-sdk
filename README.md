@@ -40,11 +40,11 @@ use Transfereasy\Pay\Exception\Exception;
 
 //1. 设置config
  $config = [
-            'm_private_key_path' => __DIR__ . '/merchant_private_test.key',
-            't_public_key_path' => __DIR__ . '/te_public_test.key',
+            'm_private_key_path' => '',//商户私钥文件路径，如：'./merchant_private_test.key'
+            't_public_key_path' => '', //TE公钥文件路径 如： './te_public_test.key'
             't_merchant_no' => '80000138',
             't_product_code' => 'CP0001',
-            'env' => 'test', //设置为测试环境
+            'env' => 'test', //设置为测试环境，生产环境可忽略该参数
         ];
 
 try {
@@ -71,6 +71,8 @@ try {
         ];
         //如果调用V2接口使用TE::transactionV2($config)
         $get_payment_result = TE::transaction($config)->payment($params);
+        //处理自己的业务逻辑
+        //...
 } catch (Exception $e) {
     echo "调用失败，". $e->getMessage(). PHP_EOL;;
 }
