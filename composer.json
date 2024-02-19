@@ -1,12 +1,14 @@
 {
     "name": "transfereasy/pay",
     "description": "transfereasy 的PHP SDK",
+    "license": "MIT",
     "require": {
+        "php": ">=7.4",
         "guzzlehttp/psr7": "^2.6",
         "ramsey/collection": "^1.3",
         "guzzlehttp/guzzle": "^7.8",
-      "ext-json": "*",
-      "ext-openssl": "*"
+        "ext-json": "*",
+        "ext-openssl": "*"
     },
     "autoload": {
         "psr-4": {
