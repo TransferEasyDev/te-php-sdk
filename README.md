@@ -1,2 +1,4 @@
 # pay
-pay sdk
+Transfereasy PHP SDK
+
+

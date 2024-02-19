@@ -52,7 +52,7 @@ class BaseService
     public function notify(string $params, string $signature, $timestamp):array
     {
         //验签
-        if (base64_decode($signature) != Ticket::getVerifyStr($params, $timestamp, $this->config['t_public_key_path'])) {
+        if (!Ticket::getVerifyStr($params, $timestamp, $signature, $this->config['t_public_key_path'])) {
             throw new SignException();
         }
 

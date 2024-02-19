@@ -26,7 +26,7 @@ class TransactionService extends BaseService
             throw new CustomerException(Exception::PARAMS_IS_NOT_ENOUGH, "outTradeNo no can not empty");
         }
 
-        $route = "/V1/transaction/closePayment";
+        $route = '/V1/transaction/closePayment';
 
         return Request::post($this->domain.$route, ['outTradeNo' => $params], $this->config);
     }
@@ -40,7 +40,7 @@ class TransactionService extends BaseService
      */
     public function payment(array $params): array
     {
-        $route = "/V1/transaction/payment";
+        $route = '/V1/transaction/payment';
 
         return Request::post($this->domain.$route, $params, $this->config);
     }
@@ -54,8 +54,22 @@ class TransactionService extends BaseService
      */
     public function search(string $no): array
     {
-        $route = "/V1/transaction/searchPayment";
+        $route = '/V1/transaction/searchPayment';
         return Request::post($this->domain.$route, ['outTradeNo' => $no], $this->config);
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws CustomerException
+     * @throws ServerException
+     * @throws SignException
+     */
+    public function refund(array $params):array
+    {
+        $route = '/V1/transaction/refund';
+
+        return Request::post($this->domain.$route, $params, $this->config);
     }
 }
 
