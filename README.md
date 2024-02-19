@@ -42,8 +42,8 @@ use Transfereasy\Pay\Exception\Exception;
  $config = [
             'm_private_key_path' => '',//商户私钥文件路径，如：'./merchant_private_test.key'
             't_public_key_path' => '', //TE公钥文件路径 如： './te_public_test.key'
-            't_merchant_no' => '80000138',
-            't_product_code' => 'CP0001',
+            't_merchant_no' => '80000138', // TE商户号
+            't_product_code' => 'CP0001', // 产品号
             'env' => 'test', //设置为测试环境，生产环境可忽略该参数
         ];
 
