@@ -176,8 +176,8 @@ class TeTest extends TestCase
         ];
 
         $params = [
-            'outTradeNo' => 'T2024021811010030',
-            'paymentNo' => '20240219141835P6191',
+            'outTradeNo' => 'oSBRVrYsGz',
+            'paymentNo' => '20240220111636P4781',
             'refundAmount' => 100,
         ];
         $get_notify_result = TE::transaction($config)->refund($params);

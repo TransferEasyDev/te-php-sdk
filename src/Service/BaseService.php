@@ -30,7 +30,7 @@ class BaseService
 
     public function success():ResponseInterface
     {
-        return new Response(200, [], 'success');
+        return new Response(200, [], 'SUCCESS');
     }
 
     public function fail(int $code, string $fail_message):ResponseInterface

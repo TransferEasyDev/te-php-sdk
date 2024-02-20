@@ -78,6 +78,42 @@ try {
 }
 
 ```
+
+### 回调通知
+
+```php
+<?php
+   //以laravel 为例子回调处理 
+   public function paymentNotify(Request $request) {
+
+        Log::info($request->getContent());
+        Log::info($request->header('Signature'));
+        Log::info($request->header('Timestamp'));
+        $config = [
+            'm_private_key_path' => storage_path('app/merchant_private_test.key'),//商户私钥文件路径，如：'./merchant_private_test.key'
+            't_public_key_path' => storage_path('app/te_public_test.key'), //TE公钥文件路径 如： './te_public_test.key'
+            't_merchant_no' => '80000138', // TE商户号
+            't_product_code' => 'CP0009', // 产品号
+            'env' => 'test', //设置为测试环境，生产环境可忽略该参数
+        ];
+        try {
+            $sign = $request->header('Signature');
+            $timestamp = $request->header('Timestamp');
+
+            $get_res = TE::transaction($config)->notify($request->getContent(), $sign, $timestamp);
+            Log::info($get_res);
+            //验签成功后，将返回TE的通知body数组
+            //return TE::transaction($config)->success();
+            return Response('SUCCESS', 200); //laravel返回
+        }catch (Exception $e) {
+            echo "调用失败，". $e->getMessage(). PHP_EOL;;
+        }
+        //return TE::transaction($config)->fail(500, 'error');
+        return response()->json(['message' => 'error'], 500);
+    }
+
+```
+
 ## 已支持的API列表
 
 | 类别       | 接口方法名称        | 版本    |
@@ -88,7 +124,7 @@ try {
 | 收单 | notify        | V1    | 
 | 收单 | refund        | V1    |
 
-> 注：更多场景的API持续更新中或联系技术支持进行更新，敬请期待。
+> 注：更多场景的API持续更新，或联系技术支持进行更新。
 
 ## Transfereasy接口文档
 [API Doc](https://mrdoc.transfereasy.com/)
